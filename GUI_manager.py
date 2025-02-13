@@ -59,9 +59,9 @@ def gui_start():
             player_2.items.append(moves.Potions[randint])
     # switching pokemons status if HP == 0
     def check_if_fainted(pok1, pok2) :
-        if pok1.hp == 0 :
+        if pok1.hp <= 0 :
             pok1.status = 12
-        elif pok2.hp == 0 :
+        elif pok2.hp <= 0 :
             pok2.status = 12
 
     #function is called from switch pok function and does this: switching pokemon and printing the message, creating
@@ -78,8 +78,8 @@ def gui_start():
         old_pok = getattr(player_on_turn.active_pokemon(), "name")
         player_on_turn.active_pokemon().chosen = False
         player_on_turn.pokemons[user_decision3 - 1].chosen = True
-        printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-        printing_console1.place(x=230, y=440)
+        printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+        printing_console1.place(x=340, y=440)
         btn_ch_pk1 = Button(main_screen, text="Change Pokemon", command=switch_pok, width=15)
         btn_ch_pk1.place(x=30, y=280)
         items1 = Button(main_screen, text="Items", width=15, command=items_viewer)
@@ -304,6 +304,46 @@ def gui_start():
         picture_label1.place(x=180, y=150)
         picture_label1.update()
 
+        hp1_bar = Label(main_screen, width=30, height=1, bg="grey",)
+        hp1_bar.place(x=40, y=560)
+        hp1_bar.update()
+
+        hp2_bar = Label(main_screen, width=30, height=1, bg="grey")
+        hp2_bar.place(x=720, y=560)
+        hp2_bar.update()
+
+        p1_hp = int(player_1.active_pokemon().hp / list_pokemon.pokemon_list[player_1.active_pokemon().name]["hp"] * 30)
+        p2_hp = int(player_2.active_pokemon().hp / list_pokemon.pokemon_list[player_2.active_pokemon().name]["hp"] * 30)
+
+        color_p1 = "green"
+        color_p2 = "green"
+
+        if 17 <= p1_hp < 24:
+            color_p1 = "blue"
+        elif 10 <= p1_hp < 17:
+            color_p1 = "yellow"
+        elif 3 <= p1_hp < 10:
+            color_p1 = "orange"
+        elif p1_hp < 3:
+            color_p1 = "red"
+
+        if 17 <= p2_hp < 24:
+            color_p2 = "blue"
+        elif 10 <= p2_hp < 17:
+            color_p2 = "yellow"
+        elif 3 <= p2_hp < 10:
+            color_p2 = "orange"
+        elif p2_hp < 3:
+            color_p2 = "red"
+
+        hp1_bar_height = Label(main_screen, width=p1_hp, height=1, bg=color_p1)
+        hp1_bar_height.place(x=40, y=560)
+        hp1_bar_height.update()
+
+        hp2_bar_height = Label(main_screen, width=p2_hp, height=1, bg=color_p2)
+        hp2_bar_height.place(x=720, y=560)
+        hp2_bar_height.update()
+
         tkinter.img2 = PhotoImage(file=f"imgs/{getattr(player_2.active_pokemon(), "name")}.gif")
         picture_label2 = Label(main_screen, width=280, height=280, anchor=NW, image=tkinter.img2)
         picture_label2.place(x=550, y=150)
@@ -440,9 +480,8 @@ def gui_start():
             player_on_turn = player_2
             player_not_on_turn = player_1
         pok1 = player_on_turn.active_pokemon()
-        printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-        printing_console1.place(x=230, y=440)
-
+        printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+        printing_console1.place(x=340, y=440)
 
 
         if item in moves.ITEMS["Status changers"]:
@@ -935,8 +974,8 @@ def gui_start():
         if 2 <= pok1.status <= 8:
             heal_checker = random.randint(1,5)
             if heal_checker == 1 or heal_checker == 2:
-                printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                printing_console1.place(x=230, y=440)
+                printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                printing_console1.place(x=340, y=440)
                 if 5 <= pok1.status <= 8:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} is {pokemon_class.statuses[pok1.status]}.\n"
                                                   f"{getattr(pok1, "name")} suffers from being {pokemon_class.statuses[pok1.status]}")
@@ -950,8 +989,8 @@ def gui_start():
                     turn_switcher()
             else:
                 if moves.moves_g1[move]["category"] == "status" :
-                    printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                    printing_console1.place(x=230, y=440)
+                    printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                    printing_console1.place(x=340, y=440)
 
                     if move in moves.OPP_ACC_dec_1 :
                         printing_console1.insert(END,f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
@@ -1038,8 +1077,8 @@ def gui_start():
                         OPP_Speed_dec_1(1)
                 elif moves.moves_g1[move]["category"] == "physical" :
                     accuracy_check = random.randint(1, 101)
-                    printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                    printing_console1.place(x=230, y=440)
+                    printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                    printing_console1.place(x=340, y=440)
                     if critical_hit_check(pok1, move):
                         if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                                 pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check) :
@@ -1151,8 +1190,8 @@ def gui_start():
                         pok1.status = 1
                 elif moves.moves_g1[move]["category"] == "special" :
                     accuracy_check = random.randint(1, 101)
-                    printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                    printing_console1.place(x=230, y=440)
+                    printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                    printing_console1.place(x=340, y=440)
                     if critical_hit_check(pok1, move):
                         if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                                 (pokemon_class.stat_changes_multipliers[pok2.evasion * -1]) > accuracy_check) :
@@ -1270,14 +1309,14 @@ def gui_start():
 # pokemon in OK status - does the damage or status change according move
         elif pok1.status == 1:
             if moves.moves_g1[move]["category"] == "status" :
-                printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                printing_console1.place(x=230, y=440)
+                printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                printing_console1.place(x=340, y=440)
                 call_all_move_groups(2)
 
             elif moves.moves_g1[move]["category"] == "physical" :
                 accuracy_check = random.randint(1,101)
-                printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                printing_console1.place(x=230, y=440)
+                printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                printing_console1.place(x=340, y=440)
                 if critical_hit_check(pok1,move):
                     if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                             pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check):
@@ -1384,8 +1423,8 @@ def gui_start():
                         check_if_fainted(pok1, pok2)
             elif moves.moves_g1[move]["category"] == "special" :
                 accuracy_check = random.randint(1, 101)
-                printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                printing_console1.place(x=230, y=440)
+                printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                printing_console1.place(x=340, y=440)
                 if critical_hit_check(pok1, move):
                     if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                             pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check) :
@@ -1400,7 +1439,7 @@ def gui_start():
                                 if pok2.hp < 0 :
                                     pok2.hp = 0
                                 printing_console1 = Text(main_screen, width=48, height=7, font="Helvetica")
-                                printing_console1.place(x=230, y=440)
+                                printing_console1.place(x=340, y=440)
                                 printing_console1.insert(END,
                                                          f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n")
                                 if effectivity_checker(move, pok2) == 0 :
@@ -1420,8 +1459,8 @@ def gui_start():
                             pok2.hp -= int(damage * 1.5) * effectivity_checker(move, pok2)
                             if pok2.hp < 0 :
                                 pok2.hp = 0
-                            printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                            printing_console1.place(x=230, y=440)
+                            printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                            printing_console1.place(x=340, y=440)
                             printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n")
                             if effectivity_checker(move, pok2) == 0 :
                                 printing_console1.insert(END, f"\n{getattr(pok2, "name")}is not affected.")
@@ -1454,7 +1493,7 @@ def gui_start():
                                 if pok2.hp < 0 :
                                     pok2.hp = 0
                                 printing_console1 = Text(main_screen, width=48, height=7, font="Helvetica")
-                                printing_console1.place(x=230, y=440)
+                                printing_console1.place(x=340, y=440)
                                 printing_console1.insert(END,
                                                          f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n")
                                 if effectivity_checker(move, pok2) == 0 :
@@ -1474,8 +1513,8 @@ def gui_start():
                             pok2.hp -= int(damage * effectivity_checker(move, pok2))
                             if pok2.hp < 0 :
                                 pok2.hp = 0
-                            printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-                            printing_console1.place(x=230, y=440)
+                            printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+                            printing_console1.place(x=340, y=440)
                             printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n")
                             if effectivity_checker(move, pok2) == 0 :
                                 printing_console1.insert(END, f"\n{getattr(pok2, "name")}is not affected.")
@@ -1502,8 +1541,8 @@ def gui_start():
             if i.status != 12 :
                 healthy_pokemons += 1
         if healthy_pokemons == 0 :
-            printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-            printing_console1.place(x=230, y=440)
+            printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+            printing_console1.place(x=340, y=440)
             printing_console1.insert(END, (f"{str(user_entry1.get())} is out of usable Pokemons!\n"
                   f"{str(user_entry1.get())} lost!"))
             tkinter.img3 = PhotoImage(file=f"imgs/game_over.gif")
@@ -1529,8 +1568,8 @@ def gui_start():
             if i.status != 12 :
                 healthy_pokemons += 1
         if healthy_pokemons == 0 :
-            printing_console1 = Text(main_screen, width=48, height=7, font= "Helvetica")
-            printing_console1.place(x=230, y=440)
+            printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
+            printing_console1.place(x=340, y=440)
             printing_console1.insert(END, (f"{str(user_entry2.get())} is out of usable Pokemons!\n"
                                            f"{str(user_entry2.get())} lost!"))
             tkinter.img3 = PhotoImage(file=f"imgs/game_over.gif")
