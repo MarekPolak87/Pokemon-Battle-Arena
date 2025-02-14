@@ -44,7 +44,7 @@ def gui_start():
         player_1.name = str(user_entry2)
         player_2.turn = False
         player_class.players.append(player_2.name)
-        party_size = x
+        party_size = int(user_entry3.get())
         # choosing pokemons
         for i in range(1, party_size + 1) :
             player_1.choosing_pokemon(list_pokemon.list_of_pokemon[random.randint(0, 150)])
@@ -57,6 +57,14 @@ def gui_start():
             player_1.items.append(moves.Potions[randint])
             randint = random.randint(0, 5)
             player_2.items.append(moves.Potions[randint])
+
+        party1_levels = [int(random.triangular(20, 60, 40)) for i in range(1, party_size + 1)]
+        party2_levels = [int(random.triangular(20, 60, 40)) for j in range(1, party_size + 1)]
+
+        for i in range(1, party_size + 1) :
+            player_1.pokemons[i - 1].level = party1_levels[i - 1]
+            player_2.pokemons[i - 1].level = party2_levels[i - 1]
+
     # switching pokemons status if HP == 0
     def check_if_fainted(pok1, pok2) :
         if pok1.hp <= 0 :
@@ -79,7 +87,7 @@ def gui_start():
         player_on_turn.active_pokemon().chosen = False
         player_on_turn.pokemons[user_decision3 - 1].chosen = True
         printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-        printing_console1.place(x=340, y=440)
+        printing_console1.place(x=300, y=436)
         btn_ch_pk1 = Button(main_screen, text="Change Pokemon", command=switch_pok, width=15)
         btn_ch_pk1.place(x=30, y=280)
         items1 = Button(main_screen, text="Items", width=15, command=items_viewer)
@@ -92,11 +100,11 @@ def gui_start():
         btn_show_moves1 = Button(main_screen,
                                  text=f"Moves {getattr(player_1.active_pokemon(), "name")}",
                                  command=move_selector, width=20)
-        btn_show_moves1.place(x=180, y=100)
+        btn_show_moves1.place(x=200, y=100)
         btn_show_moves2 = Button(main_screen,
                                  text=f"Moves {getattr(player_2.active_pokemon(), "name")}",
                                  command=move_selector, width=20)
-        btn_show_moves2.place(x=680, y=100)
+        btn_show_moves2.place(x=660, y=100)
 
         turn_switcher()
         if player_on_turn == player_1 :
@@ -195,7 +203,7 @@ def gui_start():
         else :
             player_on_turn = player_2
             player_not_on_turn = player_1
-        for i in range(1, x+1):
+        for i in range(1, party_size + 1):
             try:
                 player_on_turn.pokemons[i - 1]
             except IndexError:
@@ -231,7 +239,6 @@ def gui_start():
     def confirm_init_settings():
         global x, player_on_turn, player_not_on_turn, party_size
         t1 = int(user_entry3.get())
-        x = t1
         pok_count = 1
         y_increment = 100
         if party_size < 1:
@@ -241,9 +248,9 @@ def gui_start():
         conf_btn.place_forget()
         lbl3.place_forget()
         user_entry3.place_forget()
-        party_size = x
+        party_size = t1
         #creating pokemon labels player 1
-        for i in range(1, x + pok_count):
+        for i in range(1, t1 + pok_count):
             try:
                 player_1.pokemons[i - 1]
             except IndexError:
@@ -251,17 +258,17 @@ def gui_start():
             else:
                 name1 = Label(main_screen,
                              text=f"{(getattr(player_1.pokemons[i-1], "name")).capitalize()} / "
-                                  f"{getattr(player_1.pokemons[i-1], "hp")} / "
+                                  f"lvl {getattr(player_1.pokemons[i-1], "level")} / "
                                   f"{pokemon_class.statuses[getattr(player_1.pokemons[i-1], "status")]}",
-                             height=2, width=18, background=f"{getattr(player_1.pokemons[i-1], "GUI_color")}",)
-                name1.place(x=20, y=0 + y_increment)
+                             height=2, width=23, background=f"{getattr(player_1.pokemons[i-1], "GUI_color")}",)
+                name1.place(x=13, y=0 + y_increment)
                 y_increment += 25
                 pok_count += 1
         y_increment = 100
         pok_count = 1
 
         # creating pokemon labels player 2
-        for i in range(1, x + pok_count):
+        for i in range(1, t1 + pok_count):
             try:
                 player_2.pokemons[i - 1]
             except IndexError:
@@ -269,10 +276,10 @@ def gui_start():
             else:
                 name2 = Label(main_screen,
                              text=f"{(getattr(player_2.pokemons[i - 1], "name")).capitalize()} / "
-                                  f"{getattr(player_2.pokemons[i - 1], "hp")} / "
+                                  f"lvl {getattr(player_2.pokemons[i-1], "level")} / "
                                   f"{pokemon_class.statuses[getattr(player_2.pokemons[i - 1], "status")]}",
-                             height=2, width=18, background=f"{getattr(player_2.pokemons[i - 1], "GUI_color")}")
-                name2.place(x=850, y=0 + y_increment)
+                             height=2, width=23, background=f"{getattr(player_2.pokemons[i - 1], "GUI_color")}")
+                name2.place(x=830, y=0 + y_increment)
                 y_increment += 25
                 pok_count += 1
 
@@ -294,15 +301,20 @@ def gui_start():
         btn_show_moves1 = Button(main_screen,
                                 text=f"Moves {getattr(player_1.active_pokemon(), "name")}",
                                 command=move_selector, width=20)
-        btn_show_moves1.place(x=180, y=100)
+        btn_show_moves1.place(x=200, y=100)
         btn_show_moves2 = Button(main_screen,
                                 text=f"Moves {getattr(player_2.active_pokemon(), "name")}",
                                 command=move_selector, width=20)
-        btn_show_moves2.place(x=680, y=100)
+        btn_show_moves2.place(x=660, y=100)
         tkinter.img = PhotoImage(file=f"imgs1/{getattr(player_1.active_pokemon(), "name")}.gif")
         picture_label1 = Label(main_screen, width=280, height=280, anchor=NW, image=tkinter.img)
         picture_label1.place(x=180, y=150)
         picture_label1.update()
+
+        tkinter.img2 = PhotoImage(file=f"imgs/{getattr(player_2.active_pokemon(), "name")}.gif")
+        picture_label2 = Label(main_screen, width=280, height=280, anchor=NW, image=tkinter.img2)
+        picture_label2.place(x=540, y=150)
+        picture_label2.update()
 
         hp1_bar = Label(main_screen, width=30, height=1, bg="grey",)
         hp1_bar.place(x=40, y=560)
@@ -344,10 +356,26 @@ def gui_start():
         hp2_bar_height.place(x=720, y=560)
         hp2_bar_height.update()
 
-        tkinter.img2 = PhotoImage(file=f"imgs/{getattr(player_2.active_pokemon(), "name")}.gif")
-        picture_label2 = Label(main_screen, width=280, height=280, anchor=NW, image=tkinter.img2)
-        picture_label2.place(x=550, y=150)
-        picture_label2.update()
+        hp1_label = Label(main_screen, width=10, height=2, bg=color_p1,
+                          text=f"HP: {int(player_1.active_pokemon().hp)} / {int(list_pokemon.pokemon_list[player_1.active_pokemon().name]["hp"])}")
+        hp1_label.place(x=120, y=500)
+        hp1_label.update()
+
+        hp2_label = Label(main_screen, width=10, height=2, bg=color_p2,
+                          text=f"HP: {int(player_2.active_pokemon().hp)} / {int(list_pokemon.pokemon_list[player_2.active_pokemon().name]["hp"])}")
+        hp2_label.place(x=800, y=500)
+        hp2_label.update()
+
+        tkinter.img3 = PhotoImage(file=f"imgs/{pokemon_class.statuses[getattr(player_1.active_pokemon(), "status")]}.gif")
+        status_label1 = Label(main_screen, width=150, height=130, anchor=NW, image=tkinter.img3)
+        status_label1.place(x=60, y=370)
+        status_label1.update()
+
+        tkinter.img4 = PhotoImage(
+            file=f"imgs/{pokemon_class.statuses[getattr(player_2.active_pokemon(), "status")]}.gif")
+        status_label2 = Label(main_screen, width=150, height=130, anchor=NW, image=tkinter.img4)
+        status_label2.place(x=790, y=370)
+        status_label2.update()
 
         def button_switcher():
             if player_on_turn == player_1:
@@ -481,7 +509,7 @@ def gui_start():
             player_not_on_turn = player_1
         pok1 = player_on_turn.active_pokemon()
         printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-        printing_console1.place(x=340, y=440)
+        printing_console1.place(x=300, y=436)
 
 
         if item in moves.ITEMS["Status changers"]:
@@ -613,7 +641,7 @@ def gui_start():
             pok1.status = 1
             if pok2.attack[1] > -6:
                 pok2.attack[1] -= 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok2, "name")}'s attack fell.")
                 else:
@@ -634,7 +662,7 @@ def gui_start():
             pok1.status = 1
             if pok2.defense[1] > -6 :
                 pok2.defense[1] -= 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok2, "name")}'s defense fell.")
                 else:
@@ -647,14 +675,14 @@ def gui_start():
             pok1.status = 1
             if pok2.defense[1] > -5 :
                 pok2.defense[1] -= 2
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok2, "name")}'s defense greatly fell.")
                 else:
                     printing_console1.insert(END,f"{getattr(pok2, "name")}'s defense greatly fell.")
             elif pok2.defense[1] == -5:
                 pok2.defense[1] -= 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                               f"{getattr(pok2, "name")}'s defense fell.")
                 else:
@@ -702,7 +730,7 @@ def gui_start():
             pok1.status = 1
             if pok1.attack[1] < 6:
                 pok1.attack[1] += 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok1, "name")}'s attack rose.")
                 else:
@@ -715,14 +743,14 @@ def gui_start():
             pok1.status = 1
             if pok1.attack[1] < 5:
                 pok1.attack[1] += 2
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok1, "name")}'s attack greatly rose.")
                 else:
                     printing_console1.insert(END,f"{getattr(pok1, "name")}'s attack greatly rose.")
             elif pok1.attack[1] == 5:
                 pok1.attack[1] += 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                               f"{getattr(pok1, "name")}'s attack rose.")
                 else:
@@ -736,7 +764,7 @@ def gui_start():
             pok1.status = 1
             if pok1.defense[1] < 6:
                 pok1.defense[1] += 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok1, "name")}'s defense rose.")
                 else:
@@ -749,14 +777,14 @@ def gui_start():
             pok1.status = 1
             if pok1.defense[1] < 5:
                 pok1.defense[1] += 2
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok1, "name")}'s defense greatly rose.")
                 else:
                     printing_console1.insert(END,f"{getattr(pok1, "name")}'s defense greatly rose.")
             elif pok1.defense[1] == 5:
                 pok1.defense[1] += 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                               f"{getattr(pok1, "name")}'s defense rose.")
                 else:
@@ -769,7 +797,7 @@ def gui_start():
             pok1.status = 1
             if pok1.evasion < 6:
                 pok1.evasion += 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok1, "name")}'s evasion rose.")
                 else:
@@ -782,14 +810,14 @@ def gui_start():
             pok1.status = 1
             if pok1.evasion < 5:
                 pok1.evasion += 2
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok1, "name")}'s evasion greatly rose.")
                 else:
                     printing_console1.insert(END,f"{getattr(pok1, "name")}'s evasion greatly rose.")
             elif pok1.evasion == 5 :
                 pok1.evasion += 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                               f"{getattr(pok1, "name")}'s evasion rose.")
                 else:
@@ -802,14 +830,14 @@ def gui_start():
             pok1.status = 1
             if pok1.spec_def[1] < 5:
                 pok1.spec_def[1] += 2
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok1, "name")}'s special defense greatly rose.")
                 else:
                     printing_console1.insert(END,f"{getattr(pok1, "name")}'s special defense greatly rose.")
             elif pok1.spec_def[1] == 5 :
                 pok1.spec_def[1] += 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                               f"{getattr(pok1, "name")}'s special defense rose.")
                 else:
@@ -822,14 +850,14 @@ def gui_start():
             pok1.status = 1
             if pok1.speed[1] < 6:
                 pok1.speed[1] += 2
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok1, "name")}'s speed greatly rose.")
                 else:
                     printing_console1.insert(END,f"{getattr(pok1, "name")}'s speed greatly rose.")
             elif pok1.speed[1] == 5:
                 pok1.speed[1] += 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                               f"{getattr(pok1, "name")}'s speed rose.")
                 else:
@@ -874,7 +902,7 @@ def gui_start():
             pok1.status = 1
             if pok2.spec_def[1] > -6:
                 pok2.spec_def[1] -= 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok2, "name")}'s special defense fell.")
                 else:
@@ -886,7 +914,7 @@ def gui_start():
             pok1.status = 1
             if pok2.speed[1] > -6:
                 pok2.speed[1] -= 1
-                if add_checker != 2:
+                if add_checker == 2:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n"
                                           f"{getattr(pok2, "name")}'s speed fell.")
                 else:
@@ -972,10 +1000,10 @@ def gui_start():
 #check whether pok status is paralyzed, asleep, poisoned, frozen, confused, burned or poisoned, if yes, switches turn and hit pokemon,
         # if it heals it does the selected move
         if 2 <= pok1.status <= 8:
-            heal_checker = random.randint(1,5)
+            heal_checker = random.randint(1,6)
             if heal_checker == 1 or heal_checker == 2:
                 printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                printing_console1.place(x=340, y=440)
+                printing_console1.place(x=300, y=436)
                 if 5 <= pok1.status <= 8:
                     printing_console1.insert(END, f"{getattr(pok1, "name")} is {pokemon_class.statuses[pok1.status]}.\n"
                                                   f"{getattr(pok1, "name")} suffers from being {pokemon_class.statuses[pok1.status]}")
@@ -990,15 +1018,15 @@ def gui_start():
             else:
                 if moves.moves_g1[move]["category"] == "status" :
                     printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                    printing_console1.place(x=340, y=440)
+                    printing_console1.place(x=300, y=436)
 
                     if move in moves.OPP_ACC_dec_1 :
                         printing_console1.insert(END,f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        OPP_ACC_dec_1(1)
+                        OPP_ACC_dec_1(2)
                     elif move in moves.OPP_ATT_dec_1 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        OPP_ATT_dec_1(1)
+                        OPP_ATT_dec_1(2)
                     elif move in moves.OPP_CONFUSION :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
@@ -1006,11 +1034,11 @@ def gui_start():
                     elif move in moves.OPP_DEF_dec_1 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        OPP_DEF_dec_1(1)
+                        OPP_DEF_dec_1(2)
                     elif move in moves.OPP_DEF_dec_2 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        OPP_DEF_dec_2(1)
+                        OPP_DEF_dec_2(2)
                     elif move in moves.OPP_PARLYZ :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
@@ -1026,35 +1054,35 @@ def gui_start():
                     elif move in moves.US_ATT1 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        US_ATT1(1)
+                        US_ATT1(2)
                     elif move in moves.US_ATT2 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        US_ATT2(1)
+                        US_ATT2(2)
                     elif move in moves.US_DEF1 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        US_DEF1(1)
+                        US_DEF1(2)
                     elif move in moves.US_DEF2 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        US_DEF2(1)
+                        US_DEF2(2)
                     elif move in moves.US_EVAS1 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        US_EVAS1(1)
+                        US_EVAS1(2)
                     elif move in moves.US_EVAS2 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        US_EVAS2(1)
+                        US_EVAS2(2)
                     elif move in moves.US_SPCDEF2 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        US_SPCDEF2(1)
+                        US_SPCDEF2(2)
                     elif move in moves.US_SPEED2 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        US_SPEED2(1)
+                        US_SPEED2(2)
                     elif move in moves.OPP_BURN :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
@@ -1070,7 +1098,7 @@ def gui_start():
                     elif move in moves.OPP_Specdef_dec_1 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
-                        OPP_Specdef_dec_1(1)
+                        OPP_Specdef_dec_1(2)
                     elif move in moves.OPP_Speed_dec_1 :
                         printing_console1.insert(END,
                                                  f"{getattr(pok1, "name")} is not {pokemon_class.statuses[pok1.status]} anymore.\n")
@@ -1078,13 +1106,13 @@ def gui_start():
                 elif moves.moves_g1[move]["category"] == "physical" :
                     accuracy_check = random.randint(1, 101)
                     printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                    printing_console1.place(x=340, y=440)
+                    printing_console1.place(x=300, y=436)
                     if critical_hit_check(pok1, move):
                         if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                                 pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check) :
-                            damage = int((((2 * 50 / 5 + 2) * (pok1.attack[0] * pokemon_class.stat_changes_multipliers[
+                            damage = int((((2 * pok1.level / 5 + 2) * (pok1.attack[0] * pokemon_class.stat_changes_multipliers[
                                 pok1.attack[1]]) * moves.moves_g1[move]["power"] / (pok2.defense[0] *
-                                pokemon_class.stat_changes_multipliers[pok2.defense[1]])) / 50) + 2)
+                                pokemon_class.stat_changes_multipliers[pok2.defense[1]])) / pok2.level) + 2)
                             if move in moves.MULTI_HITTER:
                                 repeater = random.randint(2,5)
                                 for i in range(1, repeater + 1):
@@ -1128,17 +1156,17 @@ def gui_start():
                                     printing_console1.insert(END, f"\n{getattr(pok2, "name")}'s HP changed to: {pok2.hp}\n")
                                 check_if_fainted(pok1, pok2)
                             if pok2.hp != 0:
-                                call_all_move_groups(2)
-
+                                call_all_move_groups(1)
+                        pok1.status = 1
                     elif not crit_ratio:
                         if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                                 pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check) :
                             damage = int(
-                                (((2 * 50 / 5 + 2) * (
+                                (((2 * pok1.level / 5 + 2) * (
                                         pok1.attack[0] * pokemon_class.stat_changes_multipliers[pok1.attack[1]]) *
                                   moves.moves_g1[move]["power"] / (pok2.defense[0] *
                                                                    pokemon_class.stat_changes_multipliers[
-                                                                       pok2.defense[1]])) / 50) + 2)
+                                                                       pok2.defense[1]])) / pok2.level) + 2)
                             if move in moves.MULTI_HITTER:
                                 repeater = random.randint(2,5)
                                 for i in range(1, repeater + 1):
@@ -1183,7 +1211,8 @@ def gui_start():
 
                                 check_if_fainted(pok1, pok2)
                             if pok2.hp != 0 :
-                                call_all_move_groups(2)
+                                call_all_move_groups(1)
+                        pok1.status = 1
                     else :
                         printing_console1.insert(END, f"{getattr(pok1, "name")} missed.\n")
                         check_if_fainted(pok1, pok2)
@@ -1191,16 +1220,17 @@ def gui_start():
                 elif moves.moves_g1[move]["category"] == "special" :
                     accuracy_check = random.randint(1, 101)
                     printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                    printing_console1.place(x=340, y=440)
+                    printing_console1.place(x=300, y=436)
+
                     if critical_hit_check(pok1, move):
                         if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                                 (pokemon_class.stat_changes_multipliers[pok2.evasion * -1]) > accuracy_check) :
                             damage = int(
-                                (((2 * 50 / 5 + 2) * (
+                                (((2 * pok1.level / 5 + 2) * (
                                             pok1.spec_att[0] * pokemon_class.stat_changes_multipliers[pok1.spec_att[1]]) *
                                   moves.moves_g1[move]["power"] / (pok2.spec_def[0] *
                                                                    pokemon_class.stat_changes_multipliers[
-                                                                       pok2.spec_def[1]])) / 50) + 2)
+                                                                       pok2.spec_def[1]])) / pok2.level) + 2)
                             if move in moves.MULTI_HITTER:
                                 repeater = random.randint(2,5)
                                 for i in range(1, repeater + 1):
@@ -1245,16 +1275,17 @@ def gui_start():
                                     printing_console1.insert(END, f"\n{getattr(pok2, "name")}'s HP changed to: {pok2.hp}\n")
                                 check_if_fainted(pok1, pok2)
                             if pok2.hp != 0 :
-                                call_all_move_groups(2)
+                                call_all_move_groups(1)
+                        pok1.status = 1
                     elif not crit_ratio:
                         if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                                 (pokemon_class.stat_changes_multipliers[pok2.evasion * -1]) > accuracy_check) :
                             damage = int(
-                                (((2 * 50 / 5 + 2) * (
+                                (((2 * pok1.level / 5 + 2) * (
                                             pok1.spec_att[0] * pokemon_class.stat_changes_multipliers[pok1.spec_att[1]]) *
                                   moves.moves_g1[move]["power"] / (pok2.spec_def[0] *
                                                                    pokemon_class.stat_changes_multipliers[
-                                                                       pok2.spec_def[1]])) / 50) + 2)
+                                                                       pok2.spec_def[1]])) / pok2.level) + 2)
                             if move in moves.MULTI_HITTER:
                                 repeater = random.randint(2,5)
                                 for i in range(1, repeater + 1):
@@ -1298,7 +1329,8 @@ def gui_start():
                                 check_if_fainted(pok1, pok2)
                             pok1.status = 1
                             if pok2.hp != 0 :
-                                call_all_move_groups(2)
+                                call_all_move_groups(1)
+                        pok1.status = 1
                     else :
                         printing_console1.insert(END, f"{getattr(pok1, "name")} missed.\n")
                         check_if_fainted(pok1, pok2)
@@ -1310,20 +1342,19 @@ def gui_start():
         elif pok1.status == 1:
             if moves.moves_g1[move]["category"] == "status" :
                 printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                printing_console1.place(x=340, y=440)
+                printing_console1.place(x=300, y=436)
                 call_all_move_groups(2)
-
             elif moves.moves_g1[move]["category"] == "physical" :
                 accuracy_check = random.randint(1,101)
                 printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                printing_console1.place(x=340, y=440)
+                printing_console1.place(x=300, y=436)
                 if critical_hit_check(pok1,move):
                     if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                             pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check):
                         damage = int(
-                            (((2 * 50 / 5 + 2) * (pok1.attack[0]*pokemon_class.stat_changes_multipliers[pok1.attack[1]]) *
+                            (((2 * pok1.level / 5 + 2) * (pok1.attack[0]*pokemon_class.stat_changes_multipliers[pok1.attack[1]]) *
                               moves.moves_g1[move]["power"] / (pok2.defense[0] *
-                                pokemon_class.stat_changes_multipliers[pok2.defense[1]])) / 50) + 2)
+                                pokemon_class.stat_changes_multipliers[pok2.defense[1]])) / pok2.level) + 2)
                         if move in moves.MULTI_HITTER :
                             repeater = random.randint(2, 5)
                             for i in range(1, repeater + 1) :
@@ -1365,7 +1396,7 @@ def gui_start():
                                 printing_console1.insert(END, f"\n{getattr(pok2, "name")}'s HP changed to: {pok2.hp}\n")
                             check_if_fainted(pok1, pok2)
                         if pok2.hp != 0 :
-                            call_all_move_groups(2)
+                            call_all_move_groups(1)
                     else :
                         printing_console1.insert(END, f"{getattr(pok1, "name")} missed.\n")
                         check_if_fainted(pok1, pok2)
@@ -1373,11 +1404,11 @@ def gui_start():
                     if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                             pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check) :
                         damage = int(
-                            (((2 * 50 / 5 + 2) * (
+                            (((2 * pok1.level / 5 + 2) * (
                                         pok1.attack[0] * pokemon_class.stat_changes_multipliers[pok1.attack[1]]) *
                               moves.moves_g1[move]["power"] / (pok2.defense[0] *
                                                                pokemon_class.stat_changes_multipliers[
-                                                                   pok2.defense[1]])) / 50) + 2)
+                                                                   pok2.defense[1]])) / pok2.level) + 2)
                         if move in moves.MULTI_HITTER :
                             repeater = random.randint(2, 5)
                             for i in range(1, repeater + 1) :
@@ -1417,21 +1448,21 @@ def gui_start():
                                 printing_console1.insert(END, f"\n{getattr(pok2, "name")}'s HP changed to: {pok2.hp}\n")
                             check_if_fainted(pok1, pok2)
                         if pok2.hp != 0 :
-                            call_all_move_groups(2)
+                            call_all_move_groups(1)
                     else:
                         printing_console1.insert(END, f"{getattr(pok1, "name")} missed.\n")
                         check_if_fainted(pok1, pok2)
             elif moves.moves_g1[move]["category"] == "special" :
                 accuracy_check = random.randint(1, 101)
                 printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                printing_console1.place(x=340, y=440)
+                printing_console1.place(x=300, y=436)
                 if critical_hit_check(pok1, move):
                     if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                             pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check) :
                         damage = int(
-                            (((2 * 50 / 5 + 2) * (pok1.spec_att[0] * pokemon_class.stat_changes_multipliers[pok1.spec_att[1]]) *
+                            (((2 * pok1.level / 5 + 2) * (pok1.spec_att[0] * pokemon_class.stat_changes_multipliers[pok1.spec_att[1]]) *
                               moves.moves_g1[move]["power"] / (pok2.spec_def[0] *
-                                pokemon_class.stat_changes_multipliers[pok2.spec_def[1]])) / 50) + 2)
+                                pokemon_class.stat_changes_multipliers[pok2.spec_def[1]])) / pok2.level) + 2)
                         if move in moves.MULTI_HITTER :
                             repeater = random.randint(2, 5)
                             for i in range(1, repeater + 1) :
@@ -1439,7 +1470,7 @@ def gui_start():
                                 if pok2.hp < 0 :
                                     pok2.hp = 0
                                 printing_console1 = Text(main_screen, width=48, height=7, font="Helvetica")
-                                printing_console1.place(x=340, y=440)
+                                printing_console1.place(x=300, y=436)
                                 printing_console1.insert(END,
                                                          f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n")
                                 if effectivity_checker(move, pok2) == 0 :
@@ -1460,7 +1491,7 @@ def gui_start():
                             if pok2.hp < 0 :
                                 pok2.hp = 0
                             printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                            printing_console1.place(x=340, y=440)
+                            printing_console1.place(x=300, y=436)
                             printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n")
                             if effectivity_checker(move, pok2) == 0 :
                                 printing_console1.insert(END, f"\n{getattr(pok2, "name")}is not affected.")
@@ -1473,7 +1504,7 @@ def gui_start():
                             else :
                                 printing_console1.insert(END, f"\n{getattr(pok2, "name")}'s HP changed to: {pok2.hp}\n")
                         if pok2.hp != 0 :
-                            call_all_move_groups(2)
+                            call_all_move_groups(1)
                     else :
                         printing_console1.insert(END, f"{getattr(pok1, "name")} missed.\n")
                         check_if_fainted(pok1, pok2)
@@ -1481,11 +1512,11 @@ def gui_start():
                     if (moves.moves_g1[move]["accuracy"] * pokemon_class.stat_changes_multipliers[pok1.accuracy] *
                             pokemon_class.stat_changes_multipliers[pok2.evasion * -1] > accuracy_check) :
                         damage = int(
-                            (((2 * 50 / 5 + 2) * (
+                            (((2 * pok1.level / 5 + 2) * (
                                         pok1.spec_att[0] * pokemon_class.stat_changes_multipliers[pok1.spec_att[1]]) *
                               moves.moves_g1[move]["power"] / (pok2.spec_def[0] *
                                                                pokemon_class.stat_changes_multipliers[
-                                                                   pok2.spec_def[1]])) / 50) + 2)
+                                                                   pok2.spec_def[1]])) / pok2.level) + 2)
                         if move in moves.MULTI_HITTER :
                             repeater = random.randint(2, 5)
                             for i in range(1, repeater + 1) :
@@ -1493,7 +1524,7 @@ def gui_start():
                                 if pok2.hp < 0 :
                                     pok2.hp = 0
                                 printing_console1 = Text(main_screen, width=48, height=7, font="Helvetica")
-                                printing_console1.place(x=340, y=440)
+                                printing_console1.place(x=300, y=436)
                                 printing_console1.insert(END,
                                                          f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n")
                                 if effectivity_checker(move, pok2) == 0 :
@@ -1514,7 +1545,7 @@ def gui_start():
                             if pok2.hp < 0 :
                                 pok2.hp = 0
                             printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-                            printing_console1.place(x=340, y=440)
+                            printing_console1.place(x=300, y=436)
                             printing_console1.insert(END, f"{getattr(pok1, "name")} used {moves.moves_g1[move]["name"]}.\n")
                             if effectivity_checker(move, pok2) == 0 :
                                 printing_console1.insert(END, f"\n{getattr(pok2, "name")}is not affected.")
@@ -1527,7 +1558,7 @@ def gui_start():
                             else :
                                 printing_console1.insert(END, f"\n{getattr(pok2, "name")}'s HP changed to: {pok2.hp}\n")
                         if pok2.hp != 0 :
-                            call_all_move_groups(2)
+                            call_all_move_groups(1)
                     else :
                         printing_console1.insert(END, f"{getattr(pok1, "name")} missed.\n")
                         check_if_fainted(pok1, pok2)
@@ -1542,13 +1573,13 @@ def gui_start():
                 healthy_pokemons += 1
         if healthy_pokemons == 0 :
             printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-            printing_console1.place(x=340, y=440)
+            printing_console1.place(x=300, y=436)
             printing_console1.insert(END, (f"{str(user_entry1.get())} is out of usable Pokemons!\n"
                   f"{str(user_entry1.get())} lost!"))
-            tkinter.img3 = PhotoImage(file=f"imgs/game_over.gif")
+            tkinter.img6 = PhotoImage(file=f"imgs/game_over.gif")
             newWindow1 = Toplevel(main_screen)
             newWindow1.geometry("405x290")
-            picture_label2 = Label(newWindow1, width=540, height=308, anchor=NW, image=tkinter.img3)
+            picture_label2 = Label(newWindow1, width=540, height=308, anchor=NW, image=tkinter.img6)
             picture_label2.place(x=0, y=0)
             name = Label(newWindow1,
                          text=f"You LOST {str(user_entry1.get())}!\n", bg="red"
@@ -1569,13 +1600,13 @@ def gui_start():
                 healthy_pokemons += 1
         if healthy_pokemons == 0 :
             printing_console1 = Text(main_screen, width=35, height=8, font= "Helvetica")
-            printing_console1.place(x=340, y=440)
+            printing_console1.place(x=300, y=436)
             printing_console1.insert(END, (f"{str(user_entry2.get())} is out of usable Pokemons!\n"
                                            f"{str(user_entry2.get())} lost!"))
             tkinter.img3 = PhotoImage(file=f"imgs/game_over.gif")
             newWindow1 = Toplevel(main_screen)
             newWindow1.geometry("405x290")
-            picture_label2 = Label(newWindow1, width=540, height=308, anchor=NW, image=tkinter.img3)
+            picture_label2 = Label(newWindow1, width=540, height=308, anchor=NW, image=tkinter.img6)
             picture_label2.place(x=0, y=0)
             name = Label(newWindow1,
                          text=f"You LOST {str(user_entry2.get())}!\n", bg="red"

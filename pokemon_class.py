@@ -49,6 +49,7 @@ type_colors_for_GUI = {'grass' : 'chartreuse1',
                        'ghost' : 'lightsteelblue2',
                        'ice' : 'aqua',
                        'dragon' : 'blueviolet'}
+
 def move_assigner1(type1):
     chosen_move = ""
     if type1 == "fire":
@@ -172,14 +173,9 @@ class Pokemon:
         self.type2 = lp.pokemon_list[name]["type2"]
         self.GUI_color = type_colors_for_GUI[lp.pokemon_list[name]["type1"]]
         self.move_1 = mvs.moves_g1[move_assigner1(lp.pokemon_list[name]["type1"])]
-        self.move_2 = mvs.moves_g1[mvs.normal_moves[random.randint(0, len(moves.normal_moves) - 1)][0]]
+        self.move_2 = mvs.moves_g1[mvs.non_status[random.randint(0, len(mvs.non_status)-1)]]
         self.move_3 = mvs.moves_g1[move_assigner2(lp.pokemon_list[name]["type2"], lp.pokemon_list[name]["type1"])]
         self.move_4 = mvs.moves_g1[move_assigner2(lp.pokemon_list[name]["type2"], lp.pokemon_list[name]["type1"])]
-
-
-
-
-
 
 
 

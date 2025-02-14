@@ -394,7 +394,7 @@ moves_g1 = {
         "accuracy" : 100, "PP" : 10
         },
     "Psywave" : {
-        "name" : "Psywave", "nr" : 99, "move_type" : "PSYCHIC", "category" : "special", "TM" : 46, "power" : 0,
+        "name" : "Psywave", "nr" : 99, "move_type" : "PSYCHIC", "category" : "special", "TM" : 46, "power" : random.randint(1,70),
         "accuracy" : 100, "PP" : 15
         },
     # "Quick Attack" : {
@@ -664,6 +664,7 @@ moves_g1 = {
 }
 
 list_of_moves = [key for key in moves_g1]
+non_status = [key for key in moves_g1 if moves_g1[key]["category"] != "status" and moves_g1[key]["move_type"] == "NORMAL"]
 
 
 OPP_ACC_dec_1 = ["Flash", "Kinesis", "Sand Attack", "Smokescreen"]
@@ -739,3 +740,6 @@ ITEMS = {
     }
 
 Status_changers = [key for key in ITEMS["Status changers"].keys()]
+
+
+print(random.randint(1,70))
